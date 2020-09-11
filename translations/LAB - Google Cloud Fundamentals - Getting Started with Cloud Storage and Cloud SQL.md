@@ -39,6 +39,10 @@
                     apt-get install apache2 php php-mysql -y
                     service apache2 restart
 
+         - Allow HTTP traffic
+
+            gcloud compute firewall-rules create allow-80 --allow tcp:80 --target-tags "http-server"
+
     2. Create a Cloud Storage bucket using the gsutil command line
         
          - Enter your chosen location into an environment variable called LOCATION.
