@@ -23,7 +23,6 @@
          - Using a Debial image: Debian GNU/Linux 9 (stretch).
 
             export IMAGE="debian-9-stretch-v20910213"
-            export IMAGE_PROJECT="debian-cloud"
 
          - In the US Central1-A zone: us-west1-a.
 
@@ -34,10 +33,12 @@
             gcloud compute instances create bloghost \
                 --zone=$ZONE \
                 --image=$IMAGE \
-                --image-project=$IMAGE_PROJECT \
+                --image-project=debian-cloud \
                 startup-script=#!/bin/bash apt-get update
                     apt-get install apache2 php php-mysql -y
-                    service apache2 restart
+                    service apache2 restart \
+                --subnet “default” \
+                --tags http-server
 
          - Allow HTTP traffic
 
@@ -80,15 +81,16 @@
     1. Create the instance wit instance id blog-db and root password 'root' in the us-central1-a zone
       
         gcloud sql instances create blog-db \
-            [--root-password=root] \
-            [--region=us-central1; default="us-central"     | --gce-zone=GCE_ZONE     | --zone=us-central1-a]
+            --root-password=root \
+            --region=us-central1; default="us-central"
+            --zone=us-central1-a
 
     2. Add a user account to blog-db. username 'blogbuster', password 'root'
 
         gcloud sql users create blogbuster \
             --instance=blog-db, -i blog-db \
-            [--async] \
-            [--password=root]
+            --async \
+            --password=root
 
     3. Add network of name 'web front end', for Network, type the external IP address of your bloghost VM instance, followed by /32
 
@@ -101,7 +103,7 @@
          - Add the network
 
             gcloud compute networks create 'web front end' \
-                [--range=35.192.208.2/32]
+                --range=35.192.208.2/32
 
 #Congratulations, you are done with the second objective!
 
